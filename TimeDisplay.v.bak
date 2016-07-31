@@ -1,0 +1,47 @@
+module TimeDisplayController(
+	input [11:0] numSeconds
+	output reg [39:0] displayMin2, displayMin1, displayColon, displaySec2, displaySec1);
+
+	// Each character is 5 wide and 8 tall. 
+	parameter
+	ONE = 40'b0010001100101000010000100001000010000100, 
+	TWO = 40'b0111010001000010000100010001000100011111,
+	THREE = 40'b0111010001000010011000001000011000101110,
+	FOUR = 40'b0001000110010100101010010111110001000010,
+	FIVE = 40'b0111101000100001111000001000011000101110,
+	SIX = 40'b0111010001100001111010001100011000101110,
+	SEVEN = 40'b1111100010000100010000100010000100001000,
+	EIGHT = 40'b0111010001100010111010001100011000101110,
+	NINE = 40'b0111010001100011000101111000011000101110,
+	ZERO = 40'b0111010001100011000110001100011000101110,
+	COLON = 40'b0000001100011000000000000011000110000000;
+	
+	// Minutes
+	wire [5:0] numMinutes;
+	assign numMinutes = numSeconds/60;
+	
+	wire [3:0] numMinutesFirstDigit;
+	assign numMinutesFirstDigit = numMinutes%10;
+	wire [3:0] numMinutesSecondDigit;
+	assign numMinutesSecondDigit = (numMinutes/10)%10;
+	
+	// Seconds
+	wire [5:0] numSecondsLeftover;
+	assign numSecondsLeftover = numSeconds%60;
+	
+	wire [3:0] numSecondsFirstDigit;
+	assign numSecondsFirstDigit = numSecondsLeftover%10;
+	wire [3:0] numSecondsSecondDigit;
+	assign numSecondsSecondDigit = (numSecondsLeftover/10)%10;
+	
+	always@(*)
+	begin
+		case(numMinutesFirstDigit)
+			4'd0: displayMin1 = ZERO;
+			4'd1: displayMin1 = ONE;
+			4'd2: displayMin1 = TWO;
+			// keep going
+		endcase
+	end
+	
+endmodule
